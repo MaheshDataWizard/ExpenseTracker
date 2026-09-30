@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Receive Payment - MyMoney</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 40px;
+        }
+
+        .card {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .info {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+        }
+
+        .errorlist {
+            color: #dc2626;
+            list-style: none;
+            padding: 0;
+        }
+
+        button,
+        a {
+            padding: 11px 18px;
+            border-radius: 6px;
+            border: none;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button {
+            background: #16a34a;
+            color: white;
+        }
+
+        a {
+            background: #e5e7eb;
+            color: #111827;
+            margin-left: 8px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>
+        Receive from {{ receivable.person_name }}
+    </h1>
+
+
+    <div class="info">
+
+        <strong>
+            Total:
+        </strong>
+
+        ₹{{ receivable.amount }}
+
+        <br><br>
+
+        <strong>
+            Already Received:
+        </strong>
+
+        ₹{{ receivable.received_amount }}
+
+        <br><br>
+
+        <strong>
+            Remaining:
+        </strong>
+
+        ₹{{ receivable.remaining_amount }}
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {% for field in form %}
+
+            <div class="form-group">
+
+                {{ field.errors }}
+
+                <label>
+                    {{ field.label }}
+                </label>
+
+                {{ field }}
+
+            </div>
+
+        {% endfor %}
+
+
+        <button type="submit">
+            Record Payment
+        </button>
+
+        <a href="/receivables/">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>

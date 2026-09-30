@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Delete Transaction</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 50px;
+        }
+
+        .card {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+        }
+
+        h1 {
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        button,
+        a {
+            padding: 10px 18px;
+            border-radius: 6px;
+            border: none;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button {
+            background: #dc2626;
+            color: white;
+        }
+
+        a {
+            background: #e5e7eb;
+            color: #111827;
+            margin-left: 8px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>
+        Delete Transaction?
+    </h1>
+
+    <p>
+        Are you sure you want to delete
+        <strong>
+            {{ transaction.category }}
+        </strong>
+        for
+        <strong>
+            ₹{{ transaction.amount }}
+        </strong>?
+    </p>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <button type="submit">
+            Yes, Delete
+        </button>
+
+        <a href="/transactions/">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>

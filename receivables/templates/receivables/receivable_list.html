@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Money to Receive - MyMoney</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            color: #111827;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #111827;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 35px;
+            padding-left: 12px;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin-bottom: 8px;
+        }
+
+        .menu a {
+            display: block;
+            padding: 12px;
+            color: #d1d5db;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #374151;
+            color: white;
+        }
+
+        .main {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+        }
+
+        .add-btn,
+        .receive-btn,
+        .view-btn {
+            display: inline-block;
+            padding: 9px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .add-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .receive-btn {
+            background: #16a34a;
+            color: white;
+        }
+
+        .view-btn {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .summary {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .summary-title {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .table-container {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .status {
+            padding: 5px 9px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .partial {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .received {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .empty {
+            padding: 40px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                width: 70px;
+            }
+
+            .logo {
+                font-size: 0;
+            }
+
+            .menu a {
+                font-size: 0;
+                text-align: center;
+            }
+
+            .main {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            💰 MyMoney
+        </div>
+
+        <ul class="menu">
+
+            <li>
+                <a href="/dashboard/">
+                    🏠 Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="/transactions/">
+                    💸 Transactions
+                </a>
+            </li>
+
+            <li>
+                <a href="/debts/">
+                    📤 Borrowed
+                </a>
+            </li>
+
+            <li>
+                <a
+                    href="/receivables/"
+                    class="active"
+                >
+                    📥 Receivables
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    📊 Reports
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    ⚙️ Settings
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+    <main class="main">
+
+        <div class="header">
+
+            <div>
+
+                <h1>
+                    Money to Receive
+                </h1>
+
+                <p>
+                    Track money other people need to pay you.
+                </p>
+
+            </div>
+
+            <a
+                href="/receivables/add/"
+                class="add-btn"
+            >
+                + Add Receivable
+            </a>
+
+        </div>
+
+
+        {% if messages %}
+
+            <div class="messages">
+
+                {% for message in messages %}
+
+                    <div class="message">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <div class="summary">
+
+            <div class="summary-title">
+                Total Money to Receive
+            </div>
+
+            <div class="summary-value">
+                ₹{{ total_remaining }}
+            </div>
+
+        </div>
+
+
+        <div class="table-container">
+
+            {% if receivables %}
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Person</th>
+                        <th>Total</th>
+                        <th>Received</th>
+                        <th>Remaining</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for item in receivables %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ item.person_name }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ₹{{ item.amount }}
+                        </td>
+
+                        <td>
+                            ₹{{ item.received_amount }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                ₹{{ item.remaining_amount }}
+                            </strong>
+                        </td>
+
+                        <td>
+
+                            {% if item.status == "pending" %}
+
+                                <span class="status pending">
+                                    Pending
+                                </span>
+
+                            {% elif item.status == "partially_received" %}
+
+                                <span class="status partial">
+                                    Partially Received
+                                </span>
+
+                            {% else %}
+
+                                <span class="status received">
+                                    Received
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="/receivables/{{ item.id }}/"
+                                class="view-btn"
+                            >
+                                View
+                            </a>
+
+                            {% if item.remaining_amount > 0 %}
+
+                                <a
+                                    href="/receivables/{{ item.id }}/receive/"
+                                    class="receive-btn"
+                                >
+                                    Receive
+                                </a>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+                <div class="empty">
+                    No receivables recorded.
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Transactions - MyMoney</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            color: #111827;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #111827;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 35px;
+            padding-left: 12px;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin-bottom: 8px;
+        }
+
+        .menu a {
+            display: block;
+            padding: 12px;
+            color: #d1d5db;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #374151;
+            color: white;
+        }
+
+        .main {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+        }
+
+        .add-btn {
+            background: #2563eb;
+            color: white;
+            padding: 11px 18px;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filters form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filters select,
+        .filters input {
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+        }
+
+        .filter-btn {
+            background: #374151;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .table-container {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f9fafb;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .income {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .expense {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .action {
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .edit {
+            color: #2563eb;
+        }
+
+        .delete {
+            color: #dc2626;
+        }
+
+        .empty {
+            padding: 40px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                width: 70px;
+            }
+
+            .logo {
+                font-size: 0;
+            }
+
+            .menu a {
+                font-size: 0;
+                text-align: center;
+            }
+
+            .main {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            💰 MyMoney
+        </div>
+
+        <ul class="menu">
+
+            <li>
+                <a href="/dashboard/">
+                    🏠 Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a
+                    href="/transactions/"
+                    class="active"
+                >
+                    💸 Transactions
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    📤 Borrowed
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    📥 Receivables
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    📊 Reports
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    ⚙️ Settings
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+    <main class="main">
+
+        <div class="header">
+
+            <div>
+
+                <h1>
+                    Transactions
+                </h1>
+
+                <p>
+                    Manage your income and expenses.
+                </p>
+
+            </div>
+
+            <a
+                href="/transactions/add/"
+                class="add-btn"
+            >
+                + Add Transaction
+            </a>
+
+        </div>
+
+
+        <!-- Filters -->
+
+        <div class="filters">
+
+            <form method="GET">
+
+                <select name="type">
+
+                    <option value="">
+                        All Types
+                    </option>
+
+                    <option
+                        value="income"
+                        {% if selected_type == "income" %}
+                            selected
+                        {% endif %}
+                    >
+                        Income
+                    </option>
+
+                    <option
+                        value="expense"
+                        {% if selected_type == "expense" %}
+                            selected
+                        {% endif %}
+                    >
+                        Expense
+                    </option>
+
+                </select>
+
+
+                <select name="category">
+
+                    <option value="">
+                        All Categories
+                    </option>
+
+                    <option value="Petrol">
+                        Petrol
+                    </option>
+
+                    <option value="Recharge">
+                        Recharge
+                    </option>
+
+                    <option value="Insurance">
+                        Insurance
+                    </option>
+
+                    <option value="Light Bill">
+                        Light Bill
+                    </option>
+
+                    <option value="Food">
+                        Food
+                    </option>
+
+                    <option value="Travel">
+                        Travel
+                    </option>
+
+                    <option value="Shopping">
+                        Shopping
+                    </option>
+
+                    <option value="Medical">
+                        Medical
+                    </option>
+
+                    <option value="Rent">
+                        Rent
+                    </option>
+
+                    <option value="Entertainment">
+                        Entertainment
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search description..."
+                    value="{{ search|default:'' }}"
+                >
+
+
+                <button
+                    type="submit"
+                    class="filter-btn"
+                >
+                    Filter
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- Table -->
+
+        <div class="table-container">
+
+            {% if transactions %}
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Type
+                        </th>
+
+                        <th>
+                            Category
+                        </th>
+
+                        <th>
+                            Description
+                        </th>
+
+                        <th>
+                            Payment
+                        </th>
+
+                        <th>
+                            Amount
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for transaction in transactions %}
+
+                    <tr>
+
+                        <td>
+                            {{ transaction.date|date:"d M Y" }}
+                        </td>
+
+
+                        <td>
+
+                            {% if transaction.transaction_type == "income" %}
+
+                                <span class="income">
+                                    Income
+                                </span>
+
+                            {% else %}
+
+                                <span class="expense">
+                                    Expense
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+                            {{ transaction.category }}
+                        </td>
+
+
+                        <td>
+                            {{ transaction.description|default:"-" }}
+                        </td>
+
+
+                        <td>
+                            {{ transaction.get_payment_method_display }}
+                        </td>
+
+
+                        <td>
+
+                            {% if transaction.transaction_type == "income" %}
+
+                                <span class="income">
+                                    + ₹{{ transaction.amount }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="expense">
+                                    - ₹{{ transaction.amount }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                href="/transactions/edit/{{ transaction.id }}/"
+                                class="action edit"
+                            >
+                                Edit
+                            </a>
+
+
+                            <a
+                                href="/transactions/delete/{{ transaction.id }}/"
+                                class="action delete"
+                            >
+                                Delete
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+                <div class="empty">
+
+                    No transactions found.
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

@@ -158,5 +158,6 @@ def dashboard_summary(request):
     })
 
 
+@login_required
 def dashboard_page(request):
     return render(request, "dashboard/dashboard.html")

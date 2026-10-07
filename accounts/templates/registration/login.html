@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyMoneyTracker | Login</title>
+    <style>
+        :root {
+            --bg-1: #081b2c;
+            --bg-2: #0f2d44;
+            --panel: rgba(11, 30, 46, 0.78);
+            --panel-border: rgba(255, 255, 255, 0.12);
+            --accent: #7dd3fc;
+            --accent-strong: #38bdf8;
+            --text: #edf7ff;
+            --muted: #b8d2e3;
+            --danger: #fda4af;
+            --shadow: rgba(15, 29, 45, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--text);
+            background: radial-gradient(circle at top, rgba(125, 211, 252, 0.18), transparent 30%),
+                        linear-gradient(135deg, var(--bg-1), var(--bg-2));
+        }
+
+        .login-shell {
+            width: min(100%, 430px);
+            padding: 32px 28px;
+            border-radius: 22px;
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 20px 50px var(--shadow);
+            backdrop-filter: blur(8px);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .brand-badge {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 14px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            font-size: 26px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            color: #05233a;
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.35);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: 0.04em;
+        }
+
+        .subtitle {
+            margin: 10px 0 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 28px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.88rem;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            color: var(--text);
+            outline: none;
+            font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus {
+            border-color: rgba(125, 211, 252, 0.9);
+            box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.18);
+        }
+
+        .submit-btn {
+            margin-top: 8px;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #06273d;
+            background: linear-gradient(135deg, #7dd3fc, #38bdf8);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 10px 24px rgba(56, 189, 248, 0.35);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .errorlist {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            color: var(--danger);
+            font-size: 0.9rem;
+        }
+
+        .non-field-errors {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <main class="login-shell">
+        <div class="brand">
+            <div class="brand-badge">M</div>
+            <h1>MyMoneyTracker</h1>
+            <p class="subtitle">Sign in to manage your transactions</p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="non-field-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="field">
+                <label for="id_username">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    {{ form.username.errors }}
+                {% endif %}
+            </div>
+
+            <div class="field">
+                <label for="id_password">Password</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    {{ form.password.errors }}
+                {% endif %}
+            </div>
+
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+    </main>
+</body>
+</html>

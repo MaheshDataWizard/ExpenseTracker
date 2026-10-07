@@ -266,13 +266,13 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="{% url 'dashboard' %}">
                         📊 Reports
                     </a>
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="{% url 'logout' %}">
                         ⚙️ Settings
                     </a>
                 </li>
@@ -290,29 +290,14 @@
                 <div>
                     <h1>Dashboard</h1>
                     <p id="monthLabel">
-                        September 2026
+                        Loading date...
                     </p>
                 </div>
 
-                <select id="monthSelector" class="month-selector">
-
-                    <option value="9">
-                        September
-                    </option>
-
-                    <option value="10">
-                        October
-                    </option>
-
-                    <option value="11">
-                        November
-                    </option>
-
-                    <option value="12">
-                        December
-                    </option>
-
-                </select>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <select id="monthSelector" class="month-selector"></select>
+                    <select id="yearSelector" class="month-selector"></select>
+                </div>
 
             </div>
 
@@ -473,16 +458,20 @@
                         Quickly manage your money.
                     </p>
 
-                    <a href="/transactions/add/" class="button">
+                    <a href="{% url 'add-transaction' %}" class="button">
                         + Add Transaction
                     </a>
 
-                    <a href="#" class="button">
+                    <a href="{% url 'add-debt' %}" class="button">
                         + Add Borrowed
                     </a>
 
-                    <a href="#" class="button">
+                    <a href="{% url 'add-receivable' %}" class="button">
                         + Add Receivable
+                    </a>
+
+                    <a href="{% url 'default-income-list' %}" class="button">
+                        + Add Monthly Income
                     </a>
 
                 </div>
@@ -514,6 +503,35 @@
             "December"
         ];
 
+        const yearSelector =
+            document.getElementById("yearSelector");
+
+        const today = new Date();
+        const currentMonth = today.getMonth() + 1;
+        const currentYear = today.getFullYear();
+
+        function populateMonthSelector() {
+            monthSelector.innerHTML = monthNames.map((monthName, index) => {
+                const value = index + 1;
+                const selected = value === currentMonth ? "selected" : "";
+                return `<option value="${value}" ${selected}>${monthName}</option>`;
+            }).join("");
+            monthSelector.value = String(currentMonth);
+        }
+
+        function populateYearSelector() {
+            const startYear = currentYear - 5;
+            const endYear = currentYear + 5;
+            const yearOptions = [];
+
+            for (let year = startYear; year <= endYear; year++) {
+                const selected = year === currentYear ? "selected" : "";
+                yearOptions.push(`<option value="${year}" ${selected}>${year}</option>`);
+            }
+
+            yearSelector.innerHTML = yearOptions.join("");
+            yearSelector.value = String(currentYear);
+        }
 
         function formatMoney(amount) {
 
@@ -529,7 +547,7 @@
         async function loadDashboard() {
 
             const month = parseInt(monthSelector.value);
-            const year = 2026;
+            const year = parseInt(yearSelector.value || currentYear);
 
             const apiUrl =
                 `/dashboard/summary/?month=${month}&year=${year}`;
@@ -610,8 +628,9 @@
                 // Month label
                 // -----------------------------
 
+                const todayDay = today.getDate();
                 document.getElementById("monthLabel").textContent =
-                    `${monthNames[month - 1]} ${year}`;
+                    `${monthNames[month - 1]} ${todayDay}, ${year}`;
 
 
             } catch (error) {
@@ -629,7 +648,15 @@
         }
 
 
+        populateMonthSelector();
+        populateYearSelector();
+
         monthSelector.addEventListener(
+            "change",
+            loadDashboard
+        );
+
+        yearSelector.addEventListener(
             "change",
             loadDashboard
         );

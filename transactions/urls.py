@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import (
+    default_income_list,
     transaction_list,
     add_transaction,
     edit_transaction,
@@ -14,6 +15,12 @@ urlpatterns = [
         "",
         transaction_list,
         name="transaction-list"
+    ),
+
+    path(
+        "defaults/",
+        default_income_list,
+        name="default-income-list"
     ),
 
     path(

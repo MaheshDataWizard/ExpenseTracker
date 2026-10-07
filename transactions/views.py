@@ -1,12 +1,15 @@
+from datetime import date
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import TransactionForm
-from .models import Transaction
+from .forms import DefaultIncomeForm, TransactionForm
+from .models import DefaultIncome, Transaction
 
 
 @login_required
 def transaction_list(request):
+    DefaultIncome.ensure_current_month_for_user(request.user, date.today())
 
     transactions = Transaction.objects.filter(
         user=request.user
@@ -44,6 +47,31 @@ def transaction_list(request):
 
 
 @login_required
+def default_income_list(request):
+    default_incomes = DefaultIncome.objects.filter(user=request.user).order_by("day_of_month")
+
+    if request.method == "POST":
+        form = DefaultIncomeForm(request.POST)
+        if form.is_valid():
+            default_income = form.save(commit=False)
+            default_income.user = request.user
+            default_income.save()
+            default_income.ensure_monthly_transaction(date.today())
+            return redirect("default-income-list")
+    else:
+        form = DefaultIncomeForm()
+
+    return render(
+        request,
+        "transactions/default_income_list.html",
+        {
+            "form": form,
+            "default_incomes": default_incomes,
+        },
+    )
+
+
+@login_required
 def add_transaction(request):
 
     if request.method == "POST":
@@ -62,7 +90,7 @@ def add_transaction(request):
 
     else:
 
-        form = TransactionForm()
+        form = TransactionForm(initial={"date": date.today()})
 
     return render(
         request,

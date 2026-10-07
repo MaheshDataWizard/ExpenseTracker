@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.http import JsonResponse
 
-from transactions.models import Transaction
+from transactions.models import DefaultIncome, Transaction
 from debts.models import Debt
 from receivables.models import Receivable
 
@@ -160,4 +160,5 @@ def dashboard_summary(request):
 
 @login_required
 def dashboard_page(request):
+    DefaultIncome.ensure_current_month_for_user(request.user, date.today())
     return render(request, "dashboard/dashboard.html")

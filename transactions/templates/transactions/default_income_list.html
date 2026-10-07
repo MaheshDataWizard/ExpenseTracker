@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recurring Income - MyMoney</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            color: #111827;
+        }
+        .layout { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 240px;
+            background: #111827;
+            color: white;
+            padding: 25px 15px;
+        }
+        .logo { font-size: 22px; font-weight: bold; margin-bottom: 35px; padding-left: 12px; }
+        .menu { list-style: none; }
+        .menu li { margin-bottom: 8px; }
+        .menu a {
+            display: block;
+            padding: 12px;
+            color: #d1d5db;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+        .menu a:hover, .menu a.active { background: #374151; color: white; }
+        .main { flex: 1; padding: 30px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; gap: 12px; }
+        .header h1 { font-size: 28px; }
+        .page-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .form-control {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 18px;
+        }
+        .checkbox-row input { width: 18px; height: 18px; }
+        .btn {
+            display: inline-block;
+            padding: 11px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn-primary { background: #2563eb; color: white; }
+        .btn-secondary { background: #e5e7eb; color: #111827; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 14px 16px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+        th { background: #f9fafb; color: #6b7280; font-size: 13px; }
+        .pill {
+            display: inline-block;
+            padding: 5px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            background: #dcfce7;
+            color: #166534;
+        }
+        .pill.inactive {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        @media (max-width: 700px) {
+            .sidebar { width: 70px; }
+            .logo { font-size: 0; }
+            .menu a { font-size: 0; text-align: center; }
+            .main { padding: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="logo">💰 MyMoney</div>
+            <ul class="menu">
+                <li><a href="{% url 'dashboard' %}">🏠 Dashboard</a></li>
+                <li><a href="{% url 'transaction-list' %}">💸 Transactions</a></li>
+                <li><a href="{% url 'debt-list' %}">📤 Borrowed</a></li>
+                <li><a href="{% url 'receivable-list' %}">📥 Receivables</a></li>
+                <li><a href="{% url 'default-income-list' %}" class="active">💵 Recurring Income</a></li>
+            </ul>
+        </aside>
+
+        <main class="main">
+            <div class="header">
+                <div>
+                    <h1>Recurring income</h1>
+                    <p>Set monthly income sources that are automatically added each month.</p>
+                </div>
+            </div>
+
+            <div class="page-card">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="id_source_name">Source name</label>
+                            {{ form.source_name }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_amount">Monthly amount</label>
+                            {{ form.amount }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_category">Category</label>
+                            {{ form.category }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_day_of_month">Day of month</label>
+                            {{ form.day_of_month }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_description">Description</label>
+                        {{ form.description }}
+                    </div>
+
+                    <div class="checkbox-row">
+                        {{ form.is_active }}
+                        <label for="id_is_active">Active this month</label>
+                    </div>
+
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button type="submit" class="btn btn-primary">Save recurring income</button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to dashboard</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="page-card">
+                <h2 style="margin-bottom: 16px;">Saved default incomes</h2>
+                {% if default_incomes %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Day</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in default_incomes %}
+                                <tr>
+                                    <td>{{ item.source_name }}</td>
+                                    <td>{{ item.category }}</td>
+                                    <td>₹{{ item.amount }}</td>
+                                    <td>{{ item.day_of_month }}</td>
+                                    <td>
+                                        {% if item.is_active %}
+                                            <span class="pill">Active</span>
+                                        {% else %}
+                                            <span class="pill inactive">Paused</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No recurring income added yet.</p>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+</body>
+</html>

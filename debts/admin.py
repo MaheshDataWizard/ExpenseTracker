@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.html import format_html
 
 from .models import Debt, DebtPayment
 
@@ -21,6 +23,7 @@ class DebtAdmin(admin.ModelAdmin):
         "status",
         "date",
         "user",
+        "edit",
     )
 
     list_filter = (
@@ -45,6 +48,12 @@ class DebtAdmin(admin.ModelAdmin):
 
     remaining.short_description = "Remaining"
 
+    def edit(self, obj):
+        url = reverse("admin:debts_debt_change", args=[obj.pk])
+        return format_html('<a href="{}">Edit</a>', url)
+
+    edit.short_description = "Edit"
+
 
 @admin.register(DebtPayment)
 class DebtPaymentAdmin(admin.ModelAdmin):
@@ -54,6 +63,7 @@ class DebtPaymentAdmin(admin.ModelAdmin):
         "amount",
         "date",
         "payment_method",
+        "edit",
     )
 
     list_filter = (
@@ -65,3 +75,9 @@ class DebtPaymentAdmin(admin.ModelAdmin):
         "debt__person_name",
         "notes",
     )
+
+    def edit(self, obj):
+        url = reverse("admin:debts_debtpayment_change", args=[obj.pk])
+        return format_html('<a href="{}">Edit</a>', url)
+
+    edit.short_description = "Edit"

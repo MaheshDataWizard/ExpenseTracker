@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.html import format_html
 
 from .models import (
     Receivable,
@@ -26,6 +28,7 @@ class ReceivableAdmin(admin.ModelAdmin):
         "status",
         "date",
         "user",
+        "edit",
     )
 
     list_filter = (
@@ -50,6 +53,12 @@ class ReceivableAdmin(admin.ModelAdmin):
 
     remaining.short_description = "Remaining"
 
+    def edit(self, obj):
+        url = reverse("admin:receivables_receivable_change", args=[obj.pk])
+        return format_html('<a href="{}">Edit</a>', url)
+
+    edit.short_description = "Edit"
+
 
 @admin.register(ReceivablePayment)
 class ReceivablePaymentAdmin(admin.ModelAdmin):
@@ -59,6 +68,7 @@ class ReceivablePaymentAdmin(admin.ModelAdmin):
         "amount",
         "date",
         "payment_method",
+        "edit",
     )
 
     list_filter = (
@@ -70,3 +80,9 @@ class ReceivablePaymentAdmin(admin.ModelAdmin):
         "receivable__person_name",
         "notes",
     )
+
+    def edit(self, obj):
+        url = reverse("admin:receivables_receivablepayment_change", args=[obj.pk])
+        return format_html('<a href="{}">Edit</a>', url)
+
+    edit.short_description = "Edit"
